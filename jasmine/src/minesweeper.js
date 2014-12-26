@@ -21,9 +21,14 @@ function Game(gridSize, numMines) {
   }
 
   // Place mines:
-  {
+  var countOfMinesPlaced = 0;
+  while (countOfMinesPlaced < numMines) {
     
   }
+    // x_coor
+    // y_coor
+    // if (grid[x_coor][y_coor].hasMine === false) { // place mine;
+  // increase minesPlaced; }
 
   { // Set numTouchingMines prop on squares.
   
