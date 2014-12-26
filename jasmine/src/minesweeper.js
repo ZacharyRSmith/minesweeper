@@ -4,6 +4,7 @@
 
 function Game(gridSize, numMines) {
   this.numFlagsPlaced = 0;
+  this.numMines = numMines;
   this.numSquaresDiscovered = 0;
 
   { // Generate this.grid.
@@ -27,9 +28,6 @@ function Game(gridSize, numMines) {
   }
 }
 
-game = new Game(9, 10);
-console.log((game.grid.length == 9 ? "T" : "F"));
-console.log(game.grid);
 // Game.prototype = {
 //   checkVictory:function() {
 //     if (this.grid.length ** 2 - this.numSquaresDiscovered === this.numMines) {
