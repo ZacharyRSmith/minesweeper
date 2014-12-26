@@ -11,14 +11,14 @@ function Game(gridSize, numMines) {
   this.numMines = numMines;
   this.numSquaresDiscovered = 0;
 
-  // Generate this.grid:
+  // Build this.grid:
   {
     this.grid = [];
     for (var col_i = 0; col_i < gridSize; col_i++) {
       var col = [];
       this.grid.push(col);
       for (var row_i = 0; row_i < gridSize; row_i++) {
-        var row = new Square(col_i, row_i);
+        var row = new Square(gridSize, [col_i, row_i]);
         col.push(row);
       }
     }
@@ -54,20 +54,43 @@ function Game(gridSize, numMines) {
 //   }
 // }
   
-function Square(x_coor, y_coor) {
-  this.adjSquares = this.setAdjSquares(x_coor, y_coor);
+function Square(gridSize, coordinates) {
+  this.coordinates = coordinates;
   this.isDiscovered = false;
   this.hasMine = false;
   this.numTouchingMines = null;
   this.view = " "; //   view (Mine, numMines, flag, question, blank)
+
+  // Init functions:
+  this.adjSquaresCoors = this.getAdjacentSquaresCoors(gridSize);
 }
 
 Square.prototype = {
   constructor: Square,
-//   discoverAdjSquares:function() {
+//   discoverAdjacentSquares:function() {
 //     look at squares adjacent on grid:
 //     setToDiscovered(adjSquare);
 //   },
+  getAdjacentSquaresCoors:function(gridSize) {
+    var resAry = [];
+    var x_coor = this.coordinates[0];
+    var y_coor = this.coordinates[1];
+
+    // Iterate through 8 possible adj square coordinate combinations.
+    // If coordinates are non-negative, add to result array.
+    for (var i = -1; i <= 1; i++) {
+      var x_coorNew = x_coor + i;
+      if (0 <= x_coorNew && x_coorNew <= gridSize) {
+        for (var j = -1; j <= 1; j++) {
+          var y_coorNew = y_coor + j;
+          if (0 <= y_coorNew && y_coorNew <= gridSize) {
+            resAry.push([x_coorNew, y_coorNew]);
+          }
+        }
+      }
+    }
+    return resAry;
+  },
 //   getView:function() {},
 //   actOnRightClick:function(game) {
 //     if (this.isDiscovered) { return false; }
@@ -78,20 +101,6 @@ Square.prototype = {
 //       }
 //     }
 //   },
-  setAdjSquares:function(x_coor, y_coor) {
-    // Iterate through 8 possible adj square coordinate combinations.
-    // If coordinates are non-neg, check if on grid. Add if so.
-    var coorCombos = [];
-    for (var i = -1; i <= 1; i++) {
-      var x_coorNew = x_coor + i;
-      if (x_coorNew >= 0) {
-        for (var j = -1; j <= 1; j++) {
-          var y_coorNew = y_coor + j;
-          if (y_coorNew >= 0) { coorCombos.push([x_coorNew, y_coorNew]); }
-        }
-      }
-    }
-  },
   setNumTouchingMines:function(x_coor, y_coor) {
     // Look at 8 possible adj sqrs
     // look at adjacent squares on grid. set this.numTouchingMines to
@@ -103,7 +112,7 @@ Square.prototype = {
 //     } else if (getNumTouchingMines > 0) {
 
 //     } else { // is a "blank square"
-//       discoverAdjSquares
+//       discoverAdjacentSquares
 //     }
 //   },
 //   setView:function() {},
