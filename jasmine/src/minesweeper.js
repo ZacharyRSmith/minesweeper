@@ -2,6 +2,10 @@
 
 // numFlags = numMines
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 function Game(gridSize, numMines) {
   this.numFlagsPlaced = 0;
   this.numMines = numMines;
@@ -23,12 +27,14 @@ function Game(gridSize, numMines) {
   // Place mines:
   var countOfMinesPlaced = 0;
   while (countOfMinesPlaced < numMines) {
-    
+    var x_coor = getRandomInt(0, 8);
+    var y_coor = getRandomInt(0, 8);
+    var sqr = this.grid[x_coor][y_coor];
+    if (sqr.hasMine === false) {
+      sqr.hasMine = true;
+      countOfMinesPlaced++;
+    }
   }
-    // x_coor
-    // y_coor
-    // if (grid[x_coor][y_coor].hasMine === false) { // place mine;
-  // increase minesPlaced; }
 
   { // Set numTouchingMines prop on squares.
   
