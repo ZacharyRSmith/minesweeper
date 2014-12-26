@@ -7,7 +7,8 @@ function Game(gridSize, numMines) {
   this.numMines = numMines;
   this.numSquaresDiscovered = 0;
 
-  { // Generate this.grid.
+  // Generate this.grid:
+  {
     this.grid = [];
     for (var col_i = 0; col_i < gridSize; col_i++) {
       var col = [];
@@ -19,7 +20,8 @@ function Game(gridSize, numMines) {
     }
   }
 
-  { // Place mines.
+  // Place mines:
+  {
     
   }
 
