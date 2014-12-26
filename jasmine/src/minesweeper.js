@@ -18,7 +18,7 @@ function Game(gridSize, numMines) {
       var col = [];
       this.grid.push(col);
       for (var row_i = 0; row_i < gridSize; row_i++) {
-        var row = new Square();
+        var row = new Square(col_i, row_i);
         col.push(row);
       }
     }
@@ -36,8 +36,10 @@ function Game(gridSize, numMines) {
     }
   }
 
-  { // Set numTouchingMines prop on squares.
-  
+  // Set numTouchingMines prop on squares.
+  {
+    // iterate through grid
+    // for each square, call setNumTouchingMines().
   }
 }
 
@@ -52,20 +54,19 @@ function Game(gridSize, numMines) {
 //   }
 // }
   
-function Square() {
+function Square(x_coor, y_coor) {
+  this.adjSquares = this.setAdjSquares(x_coor, y_coor);
   this.isDiscovered = false;
   this.hasMine = false;
+  this.numTouchingMines = null;
   this.view = " "; //   view (Mine, numMines, flag, question, blank)
 }
 
-// Square.prototype = {
-//   constructor: Square,
+Square.prototype = {
+  constructor: Square,
 //   discoverAdjSquares:function() {
 //     look at squares adjacent on grid:
 //     setToDiscovered(adjSquare);
-//   },
-//   getNumTouchingMines:function() {
-//     // look at adjacent squares on grid. return count that hasMine
 //   },
 //   getView:function() {},
 //   actOnRightClick:function(game) {
@@ -77,6 +78,25 @@ function Square() {
 //       }
 //     }
 //   },
+  setAdjSquares:function(x_coor, y_coor) {
+    // Iterate through 8 possible adj square coordinate combinations.
+    // If coordinates are non-neg, check if on grid. Add if so.
+    var coorCombos = [];
+    for (var i = -1; i <= 1; i++) {
+      var x_coorNew = x_coor + i;
+      if (x_coorNew >= 0) {
+        for (var j = -1; j <= 1; j++) {
+          var y_coorNew = y_coor + j;
+          if (y_coorNew >= 0) { coorCombos.push([x_coorNew, y_coorNew]); }
+        }
+      }
+    }
+  },
+  setNumTouchingMines:function(x_coor, y_coor) {
+    // Look at 8 possible adj sqrs
+    // look at adjacent squares on grid. set this.numTouchingMines to
+    // count.
+  },
 //   setToDiscovered:function() {
 //     if (hasMine) {
 
@@ -90,4 +110,4 @@ function Square() {
 //   setViewToFlag:function() {
 //   },
 //   setViewToQuestion:function() {}
-// }
+}
