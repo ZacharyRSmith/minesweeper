@@ -83,8 +83,7 @@ Game.prototype = {
         if (cell.isDiscovered === true) {
           rowHtmlStr = cell.view + rowHtmlStr;
         } else {
-          rowHtmlStr = '<div class="cell" id="' + cell.coordinates + '">' +
-            '_</div>' + rowHtmlStr;
+          rowHtmlStr = cell.viewUndiscovered + rowHtmlStr;
         }
       });
       htmlStr = htmlStr + rowHtmlStr + '</div>';
@@ -104,7 +103,8 @@ function Square(game, gridSize, coordinates) {
   this.isDiscovered = false;
   this.hasMine = false;
   this.numTouchingMines = 0;
-  this.view = '<div class="cell"> </div>';
+  this.view = '<div class="cell" id="' + this.coordinates + '">..</div>';
+  this.viewType = "blank";
   this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
     '">_</div>';
   //   view (Mine, numMines, flag, question, blank)
@@ -145,10 +145,22 @@ Square.prototype = {
   actOnRightClick:function() {
     if (this.isDiscovered) { return false; }
 
-    if (this.view === " ") {
-      if (game.numFlagsLeft > 0) {
-        this.view = "F";
-      }
+    switch(this.viewType) {
+      case "blank":
+        this.viewType = "flag";
+        this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+    '">F</div>';
+        break;
+      case "flag":
+        this.viewType = "question";
+        this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+    '">?</div>';
+        break;
+      case "question":
+        this.viewType = "blank";
+        this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+    '">_</div>';
+        break;
     }
   },
   setToDiscovered:function() {
@@ -185,6 +197,10 @@ $(document).ready(function(){
   });
   $('div#content').on('contextmenu', '.cell', function(e){
     e.preventDefault();
-    alert("Right mouse!");
+    var coors = game.divCoorsToInt($(this).attr('id'));
+    var cell = game.grid[coors[0]][coors[1]];
+    cell.actOnRightClick();
+
+    game.renderGrid();
   });
 });
