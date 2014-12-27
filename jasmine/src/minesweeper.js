@@ -105,6 +105,8 @@ function Square(game, gridSize, coordinates) {
   this.hasMine = false;
   this.numTouchingMines = 0;
   this.view = '<div class="cell"> </div>';
+  this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+    '">_</div>';
   //   view (Mine, numMines, flag, question, blank)
 
   // Init functions:
@@ -140,15 +142,15 @@ Square.prototype = {
     }
     return resAry;
   },
-//   actOnRightClick:function(game) {
-//     if (this.isDiscovered) { return false; }
+  actOnRightClick:function() {
+    if (this.isDiscovered) { return false; }
 
-//     if (this.view === " ") {
-//       if (game.numFlagsLeft > 0) {
-//         this.view = "F";
-//       }
-//     }
-//   },
+    if (this.view === " ") {
+      if (game.numFlagsLeft > 0) {
+        this.view = "F";
+      }
+    }
+  },
   setToDiscovered:function() {
     this.isDiscovered = true;
     this.game.numSquaresDiscovered++;
