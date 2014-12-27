@@ -72,7 +72,11 @@ Game.prototype = {
 
       var rowHtmlStr = '';
       col.forEach(function(cell) {
-        rowHtmlStr = cell.view + rowHtmlStr;
+        if (cell.isDiscovered === true) {
+          rowHtmlStr = cell.view + rowHtmlStr;
+        } else {
+          rowHtmlStr = '<div class="cell">_</div>' + rowHtmlStr;
+        }
       });
       htmlStr = htmlStr + rowHtmlStr + '</div>';
     });
