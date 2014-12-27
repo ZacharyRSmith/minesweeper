@@ -10,6 +10,7 @@ function Game(gridSize, numMines) {
   this.numFlagsPlaced = 0;
   this.numMines = numMines;
   this.numSquaresDiscovered = 0;
+  this.victory = null;
 
   // Build this.grid:
   {
@@ -27,8 +28,8 @@ function Game(gridSize, numMines) {
   // Place mines:
   var countOfMinesPlaced = 0;
   while (countOfMinesPlaced < numMines) {
-    var x_coor = getRandomInt(0, 8);
-    var y_coor = getRandomInt(0, 8);
+    var x_coor = getRandomInt(0, gridSize);
+    var y_coor = getRandomInt(0, gridSize);
     var sqr = this.grid[x_coor][y_coor];
     if (sqr.hasMine === false) {
       sqr.hasMine = true;
@@ -62,11 +63,11 @@ Game.prototype = {
   constructor: Game,
   checkVictory:function() {
     if (Math.pow(this.grid.length, 2) - this.numSquaresDiscovered === this.numMines) {
-      
-      this.victory = true;
-      clearInterval(intervalID);
-      
-      alert("You've won!! : D");
+      if (this.victory !== false) {
+        this.victory = true;
+        clearInterval(intervalID);
+        alert("You've won!! : D");
+      }
     }
   },
   renderGrid:function() {
@@ -163,6 +164,7 @@ Square.prototype = {
     this.game.numSquaresDiscovered++;
     if (this.hasMine === true) {
       clearInterval(intervalID);
+      this.game.victory = false;
       alert("Game over, you got explodanated!!");
       this.game.grid.forEach(function(col) {
         col.forEach(function(cell) {
