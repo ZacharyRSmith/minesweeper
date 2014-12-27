@@ -32,35 +32,52 @@ function Game(gridSize, numMines) {
     var sqr = this.grid[x_coor][y_coor];
     if (sqr.hasMine === false) {
       sqr.hasMine = true;
-      sqr.view = '<div class="cell">M</div>';
+      sqr.view = '<div class="cell">m</div>';
       countOfMinesPlaced++;
     }
   }
 
   // Set numTouchingMines prop on squares.
   {
-    for (var col_i in this.grid) {
-      var col = this.grid[col_i];
-      for (var cell_i in col) {
-        var cell = col[cell_i];
-        var numTouchingMines = 0;
-        
-        for (var coors_i in cell.adjacentSquaresCoors) {
-          var coors = cell.adjacentSquaresCoors[coors_i];
+    var grid = this.grid;
+    grid.forEach(function(col) {
+      col.forEach(function(cell) {
+        cell.adjacentSquaresCoors.forEach(function(coors) {
           x_coor = coors[0];
           y_coor = coors[1];
-          
-          if (this.grid[x_coor][y_coor].hasMine === true) {
-            numTouchingMines++;
+          if (grid[x_coor][y_coor].hasMine === true) {
+            cell.numTouchingMines++;
           }
-        }
-        cell.numTouchingMines = numTouchingMines;
-        
+        });
+
         if (cell.hasMine === false) {
           cell.view = '<div class="cell">' + cell.numTouchingMines + '</div>';
         }
-      }
-    }
+      });
+    });
+    
+//     for (var col_i in this.grid) {
+//       var col = this.grid[col_i];
+//       for (var cell_i in col) {
+//         var cell = col[cell_i];
+//         var numTouchingMines = 0;
+        
+//         for (var coors_i in cell.adjacentSquaresCoors) {
+//           var coors = cell.adjacentSquaresCoors[coors_i];
+//           x_coor = coors[0];
+//           y_coor = coors[1];
+          
+//           if (this.grid[x_coor][y_coor].hasMine === true) {
+//             numTouchingMines++;
+//           }
+//         }
+//         cell.numTouchingMines = numTouchingMines;
+        
+//         if (cell.hasMine === false) {
+//           cell.view = '<div class="cell">' + cell.numTouchingMines + '</div>';
+//         }
+//       }
+//     }
     // for each square, call setNumTouchingMines().
   }
 }
@@ -96,7 +113,7 @@ function Square(grid, gridSize, coordinates) {
   this.isDiscovered = false;
   this.grid = grid;
   this.hasMine = false;
-  this.numTouchingMines = null;
+  this.numTouchingMines = 0;
   this.view = '<div class="cell"> </div>';
   //   view (Mine, numMines, flag, question, blank)
 
