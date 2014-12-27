@@ -110,8 +110,12 @@ function Square(grid, gridSize, coordinates) {
 Square.prototype = {
   constructor: Square,
   discoverAdjacentSquares:function() {
-//     look at squares adjacent on grid:
-//     setToDiscovered(adjSquare);
+    
+    console.log("this.adj...: " + this.adjacentSquaresCoors);
+    this.adjacentSquaresCoors.forEach(function(coors) {
+      var square = this.grid[coors[0]][coors[1]];
+      square.setToDiscovered();
+    });
   },
   getAdjacentSquaresCoors:function(gridSize) {
     var resAry = [];
@@ -126,8 +130,7 @@ Square.prototype = {
         for (var j = -1; j <= 1; j++) {
           var y_coorNew = y_coor + j;
           if (0 <= y_coorNew && y_coorNew <= gridSize - 1) {
-            // Coordinates 0,0 is this square.
-            if (x_coorNew == 0 && y_coorNew == 0) { continue; }
+            if (x_coorNew == x_coor && y_coorNew == y_coor) { continue; }
             else { resAry.push([x_coorNew, y_coorNew]); }
           }
         }
