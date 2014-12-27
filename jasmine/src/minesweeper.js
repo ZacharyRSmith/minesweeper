@@ -146,15 +146,15 @@ Square.prototype = {
 //       }
 //     }
 //   },
-  setNumTouchingMines:function(x_coor, y_coor) {
-    // Look at 8 possible adj sqrs
-    // look at adjacent squares on grid. set this.numTouchingMines to
-    // count.
-  },
   setToDiscovered:function() {
     this.isDiscovered = true;
     if (this.hasMine === true) {
       alert("Game over, you got explodanated!!");
+      this.grid.forEach(function(col) {
+        col.forEach(function(cell) {
+          cell.isDiscovered = true;
+        });
+      });
     } else if (this.numTouchingMines === 0) { // is a "blank square"
       console.log("discoverAdjSqurs!");
       this.discoverAdjacentSquares();
