@@ -32,7 +32,7 @@ function Game(gridSize, numMines) {
     var sqr = this.grid[x_coor][y_coor];
     if (sqr.hasMine === false) {
       sqr.hasMine = true;
-      sqr.view = '<img src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/16/Status-user-online-icon.png" />';
+      sqr.view = '<div class="cell">M</div>';
       countOfMinesPlaced++;
     }
   }
@@ -44,14 +44,21 @@ function Game(gridSize, numMines) {
       for (var cell_i in col) {
         var cell = col[cell_i];
         var numTouchingMines = 0;
-        for (var coors in cell.adjacentSquaresCoors) {
+        
+        for (var coors_i in cell.adjacentSquaresCoors) {
+          var coors = cell.adjacentSquaresCoors[coors_i];
           x_coor = coors[0];
           y_coor = coors[1];
+          
           if (this.grid[x_coor][y_coor].hasMine === true) {
             numTouchingMines++;
           }
         }
         cell.numTouchingMines = numTouchingMines;
+        
+        if (cell.hasMine === false) {
+          cell.view = '<div class="cell">' + cell.numTouchingMines + '</div>';
+        }
       }
     }
     // for each square, call setNumTouchingMines().
@@ -112,10 +119,10 @@ Square.prototype = {
     // If coordinates are non-negative and inside grid, add to result array.
     for (var i = -1; i <= 1; i++) {
       var x_coorNew = x_coor + i;
-      if (0 <= x_coorNew && x_coorNew <= gridSize) {
+      if (0 <= x_coorNew && x_coorNew <= gridSize - 1) {
         for (var j = -1; j <= 1; j++) {
           var y_coorNew = y_coor + j;
-          if (0 <= y_coorNew && y_coorNew <= gridSize) {
+          if (0 <= y_coorNew && y_coorNew <= gridSize - 1) {
             // Coordinates 0,0 is this square.
             if (x_coorNew == 0 && y_coorNew == 0) { continue; }
             else { resAry.push([x_coorNew, y_coorNew]); }
