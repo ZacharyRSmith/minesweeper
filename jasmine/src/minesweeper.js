@@ -39,7 +39,21 @@ function Game(gridSize, numMines) {
 
   // Set numTouchingMines prop on squares.
   {
-    // iterate through grid
+    for (var col_i in this.grid) {
+      var col = this.grid[col_i];
+      for (var cell_i in col) {
+        var cell = col[cell_i];
+        var numTouchingMines = 0;
+        for (var coors in cell.adjacentSquaresCoors) {
+          x_coor = coors[0];
+          y_coor = coors[1];
+          if (this.grid[x_coor][y_coor].hasMine === true) {
+            numTouchingMines++;
+          }
+        }
+        cell.numTouchingMines = numTouchingMines;
+      }
+    }
     // for each square, call setNumTouchingMines().
   }
 }
