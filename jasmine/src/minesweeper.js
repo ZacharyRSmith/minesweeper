@@ -65,6 +65,13 @@ Game.prototype = {
 //       this.victory = true;
 //     }
 //   },
+  divCoorsToInt:function(coorsStr) {
+    var coorsIntAry = [];
+    var coorsStrAry = coorsStr.split(",");
+    coorsIntAry[0] = parseInt(coorsStrAry[0]);
+    coorsIntAry[1] = parseInt(coorsStrAry[1]);
+    return coorsIntAry;
+  },
   renderGrid:function() {
     var htmlStr = '<div id="grid">';
     this.grid.forEach(function(col) {
@@ -161,7 +168,8 @@ $(document).ready(function(){
   var game = new Game(9, 10);
   game.renderGrid();
   $('div.cell').click(function(){
-    console.log($(this));
+    var coors = game.divCoorsToInt($(this).attr('id'));
+    console.log(coors);
   });
   // on click of div.cell:
   // get cell's coors.
