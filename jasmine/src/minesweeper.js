@@ -168,14 +168,11 @@ Square.prototype = {
 $(document).ready(function(){
   var game = new Game(9, 10);
   game.renderGrid();
-  $('div.cell').click(function(){
+  $('div#content').on('click', '.cell', function(){
     var coors = game.divCoorsToInt($(this).attr('id'));
     var cell = game.grid[coors[0]][coors[1]];
     cell.setToDiscovered();
 
     game.renderGrid();
   });
-  // on click of div.cell:
-  // get cell's coors.
-  // discover that cell.
 });
