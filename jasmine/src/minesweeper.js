@@ -181,4 +181,8 @@ $(document).ready(function(){
     game.renderGrid();
     game.checkVictory();
   });
+  $('div#content').on('contextmenu', '.cell', function(e){
+    e.preventDefault();
+    alert("Right mouse!");
+  });
 });
