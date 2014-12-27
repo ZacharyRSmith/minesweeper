@@ -62,7 +62,10 @@ Game.prototype = {
   constructor: Game,
   checkVictory:function() {
     if (Math.pow(this.grid.length, 2) - this.numSquaresDiscovered === this.numMines) {
+      
       this.victory = true;
+      clearInterval(window.intervalID);
+      
       alert("You've won!! : D");
     }
   },
@@ -196,6 +199,15 @@ $(document).ready(function(){
 
   var game = new Game(gridSizeInt, numMinesInt);
   game.renderGrid();
+
+  if (game.victory !== true) {
+    var time = 0;
+    var intervalID = setInterval(function() {
+      time++;
+      $('button#timer').html('<button id="timer">Time: ' + time + '</button>');
+    }, 1000);
+  }
+
   $('div#content').on('click', '.cell', function(){
     actOnClickedCell($(this), game, function() {
       this.setToDiscovered();
