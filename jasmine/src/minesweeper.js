@@ -100,9 +100,8 @@ function Square(game, gridSize, coordinates) {
   this.viewType = "blank";
   this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
     '">_</div>';
-  //   view (Mine, numMines, flag, question, blank)
 
-  // Init functions:
+  // INIT FUNCTIONS:
   this.adjacentSquaresCoors = this.getAdjacentSquaresCoors(gridSize);
 }
 
@@ -166,9 +165,8 @@ Square.prototype = {
           cell.isDiscovered = true;
         });
       });
-    } else if (this.numTouchingMines === 0) { // is a "blank square"
+    } else if (this.numTouchingMines === 0) {
       this.discoverAdjacentSquares();
-      // discoverAdjacentSquares
     }
   }
 }
