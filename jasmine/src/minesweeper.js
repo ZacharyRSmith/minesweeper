@@ -169,7 +169,8 @@ $(document).ready(function(){
   game.renderGrid();
   $('div.cell').click(function(){
     var coors = game.divCoorsToInt($(this).attr('id'));
-    console.log(coors);
+    var cell = game.grid[coors[0]][coors[1]];
+    console.log(cell);
   });
   // on click of div.cell:
   // get cell's coors.
