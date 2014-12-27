@@ -1,0 +1,17 @@
+.col {
+    float: left;
+}
+
+div.cell {
+    background-color: gray;
+    border-style: solid;
+    border-width: 1px;
+    clear: both;
+    float: left;
+    padding: 7px;
+}
+
+img {
+    clear: both;
+    float: left;
+}
