@@ -186,7 +186,15 @@ function actOnClickedCell(jQObj, game, callback) {
 }
 
 $(document).ready(function(){
-  var game = new Game(9, 10);
+  var gridSizeStr = prompt("How long should each side of the Grid be?");
+  var gridSizeInt = parseInt(gridSizeStr);
+
+  var numMinesStr = prompt("How many mines should there be?\n" +
+                           "(WARNING: If mines mostly cover the board,\n" +
+                           " game start will take a long time!)");
+  var numMinesInt = parseInt(numMinesStr);
+
+  var game = new Game(gridSizeInt, numMinesInt);
   game.renderGrid();
   $('div#content').on('click', '.cell', function(){
     actOnClickedCell($(this), game, function() {
