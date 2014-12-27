@@ -186,21 +186,26 @@ function getCell(jQObj, game) {
   return cell;
 }
 
+function actOnClickedCell(jQObj, game, callback) {
+  var cell = getCell(jQObj, game);
+  callback.call(cell);
+  game.renderGrid();
+}
+
 $(document).ready(function(){
   var game = new Game(9, 10);
   game.renderGrid();
   $('div#content').on('click', '.cell', function(){
-    var cell = getCell($(this), game);
-    cell.setToDiscovered();
-
-    game.renderGrid();
-    game.checkVictory();
+    actOnClickedCell($(this), game, function() {
+      this.setToDiscovered();
+      game.checkVictory();
+    });
   });
   $('div#content').on('contextmenu', '.cell', function(e){
     e.preventDefault();
-    var cell = getCell($(this), game);
-    cell.actOnRightClick();
 
-    game.renderGrid();
+    actOnClickedCell($(this), game, function() {
+      this.actOnRightClick();
+    });
   });
 });
