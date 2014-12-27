@@ -55,30 +55,6 @@ function Game(gridSize, numMines) {
         }
       });
     });
-    
-//     for (var col_i in this.grid) {
-//       var col = this.grid[col_i];
-//       for (var cell_i in col) {
-//         var cell = col[cell_i];
-//         var numTouchingMines = 0;
-        
-//         for (var coors_i in cell.adjacentSquaresCoors) {
-//           var coors = cell.adjacentSquaresCoors[coors_i];
-//           x_coor = coors[0];
-//           y_coor = coors[1];
-          
-//           if (this.grid[x_coor][y_coor].hasMine === true) {
-//             numTouchingMines++;
-//           }
-//         }
-//         cell.numTouchingMines = numTouchingMines;
-        
-//         if (cell.hasMine === false) {
-//           cell.view = '<div class="cell">' + cell.numTouchingMines + '</div>';
-//         }
-//       }
-//     }
-    // for each square, call setNumTouchingMines().
   }
 }
 
@@ -91,17 +67,15 @@ Game.prototype = {
 //   },
   renderGrid:function() {
     var htmlStr = '<div id="grid">';
-    for (var col_i in this.grid) {
-      var col = this.grid[col_i];
+    this.grid.forEach(function(col) {
       htmlStr = htmlStr + '<div class="col">';
 
       var rowHtmlStr = '';
-      for (var cell_i in col) {
-        var cell = col[cell_i];
+      col.forEach(function(cell) {
         rowHtmlStr = cell.view + rowHtmlStr;
-      }
+      });
       htmlStr = htmlStr + rowHtmlStr + '</div>';
-    }
+    });
     htmlStr = htmlStr + '</div>';
 
     $('div#content').html(htmlStr);
