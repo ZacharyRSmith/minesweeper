@@ -64,7 +64,7 @@ Game.prototype = {
     if (Math.pow(this.grid.length, 2) - this.numSquaresDiscovered === this.numMines) {
       
       this.victory = true;
-      clearInterval(window.intervalID);
+      clearInterval(intervalID);
       
       alert("You've won!! : D");
     }
@@ -162,6 +162,7 @@ Square.prototype = {
     this.isDiscovered = true;
     this.game.numSquaresDiscovered++;
     if (this.hasMine === true) {
+      clearInterval(intervalID);
       alert("Game over, you got explodanated!!");
       this.game.grid.forEach(function(col) {
         col.forEach(function(cell) {
@@ -188,25 +189,26 @@ function actOnClickedCell(jQObj, game, callback) {
   callback.call(cell);
 }
 
+// GAME INIT:
+var gridSizeStr = prompt("How long should each side of the Grid be?");
+var gridSizeInt = parseInt(gridSizeStr);
+
+var numMinesStr = prompt("How many mines should there be?\n" +
+                         "(WARNING: If mines mostly cover the board,\n" +
+                         " game start will take a long time!)");
+var numMinesInt = parseInt(numMinesStr);
+
+var game = new Game(gridSizeInt, numMinesInt);
+game.renderGrid();
+
+var time = 0;
+var intervalID = setInterval(function() {
+  time++;
+  $('button#timer').html('<button id="timer">Time: ' + time + '</button>');
+}, 1000);
+
 $(document).ready(function(){
-  var gridSizeStr = prompt("How long should each side of the Grid be?");
-  var gridSizeInt = parseInt(gridSizeStr);
 
-  var numMinesStr = prompt("How many mines should there be?\n" +
-                           "(WARNING: If mines mostly cover the board,\n" +
-                           " game start will take a long time!)");
-  var numMinesInt = parseInt(numMinesStr);
-
-  var game = new Game(gridSizeInt, numMinesInt);
-  game.renderGrid();
-
-  if (game.victory !== true) {
-    var time = 0;
-    var intervalID = setInterval(function() {
-      time++;
-      $('button#timer').html('<button id="timer">Time: ' + time + '</button>');
-    }, 1000);
-  }
 
   $('div#content').on('click', '.cell', function(){
     actOnClickedCell($(this), game, function() {
