@@ -75,7 +75,8 @@ Game.prototype = {
         if (cell.isDiscovered === true) {
           rowHtmlStr = cell.view + rowHtmlStr;
         } else {
-          rowHtmlStr = '<div class="cell">_</div>' + rowHtmlStr;
+          rowHtmlStr = '<div class="cell" id="' + cell.coordinates + '">' +
+            '_</div>' + rowHtmlStr;
         }
       });
       htmlStr = htmlStr + rowHtmlStr + '</div>';
@@ -159,4 +160,10 @@ Square.prototype = {
 $(document).ready(function(){
   var game = new Game(9, 10);
   game.renderGrid();
+  $('div.cell').click(function(){
+    console.log($(this));
+  });
+  // on click of div.cell:
+  // get cell's coors.
+  // discover that cell.
 });
