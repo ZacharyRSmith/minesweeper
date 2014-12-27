@@ -59,7 +59,7 @@ Game.prototype = {
       var rowHtmlStr = '';
       for (var cell_i in col) {
         var cell = col[cell_i];
-        rowHtmlStr = cell.getView() + rowHtmlStr;
+        rowHtmlStr = '<div class="cell">' + cell.view + '</div>' + rowHtmlStr;
       }
       htmlStr = htmlStr + rowHtmlStr + '</div>';
     }
@@ -75,7 +75,8 @@ function Square(grid, gridSize, coordinates) {
   this.grid = grid;
   this.hasMine = false;
   this.numTouchingMines = null;
-  this.view = " "; //   view (Mine, numMines, flag, question, blank)
+  this.view = " ";
+  //   view (Mine, numMines, flag, question, blank)
 
   // Init functions:
   this.adjacentSquaresCoors = this.getAdjacentSquaresCoors(gridSize);
@@ -109,7 +110,6 @@ Square.prototype = {
     }
     return resAry;
   },
-//   getView:function() {},
 //   actOnRightClick:function(game) {
 //     if (this.isDiscovered) { return false; }
 
@@ -123,7 +123,7 @@ Square.prototype = {
     // Look at 8 possible adj sqrs
     // look at adjacent squares on grid. set this.numTouchingMines to
     // count.
-  },
+  }
 //   setToDiscovered:function() {
 //     if (hasMine) {
 
@@ -140,6 +140,6 @@ Square.prototype = {
 }
 
 $(document).ready(function(){
-  var game = new Game();
+  var game = new Game(9, 10);
   game.renderGrid();
 });
