@@ -18,7 +18,7 @@ function Game(gridSize, numMines) {
       var col = [];
       this.grid.push(col);
       for (var row_i = 0; row_i < gridSize; row_i++) {
-        var row = new Square(this.grid, gridSize, [col_i, row_i]);
+        var row = new Square(this, gridSize, [col_i, row_i]);
         col.push(row);
       }
     }
@@ -94,10 +94,13 @@ Game.prototype = {
   }
 }
 
-function Square(grid, gridSize, coordinates) {
+function Square(game, gridSize, coordinates) {
+  // REFERENCES:
+  this.game = game;
+
+  // PROPS:
   this.coordinates = coordinates;
   this.isDiscovered = false;
-  this.grid = grid;
   this.hasMine = false;
   this.numTouchingMines = 0;
   this.view = '<div class="cell"> </div>';
