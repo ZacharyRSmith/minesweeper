@@ -32,6 +32,7 @@ function Game(gridSize, numMines) {
     var sqr = this.grid[x_coor][y_coor];
     if (sqr.hasMine === false) {
       sqr.hasMine = true;
+      sqr.view = '<img src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/16/Status-user-online-icon.png" />';
       countOfMinesPlaced++;
     }
   }
@@ -59,7 +60,7 @@ Game.prototype = {
       var rowHtmlStr = '';
       for (var cell_i in col) {
         var cell = col[cell_i];
-        rowHtmlStr = '<div class="cell">' + cell.view + '</div>' + rowHtmlStr;
+        rowHtmlStr = cell.view + rowHtmlStr;
       }
       htmlStr = htmlStr + rowHtmlStr + '</div>';
     }
@@ -75,7 +76,7 @@ function Square(grid, gridSize, coordinates) {
   this.grid = grid;
   this.hasMine = false;
   this.numTouchingMines = null;
-  this.view = " ";
+  this.view = '<div class="cell"> </div>';
   //   view (Mine, numMines, flag, question, blank)
 
   // Init functions:
