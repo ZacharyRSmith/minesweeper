@@ -148,8 +148,9 @@ Square.prototype = {
     // Look at 8 possible adj sqrs
     // look at adjacent squares on grid. set this.numTouchingMines to
     // count.
-  }
-//   setToDiscovered:function() {
+  },
+  setToDiscovered:function() {
+    this.isDiscovered = true;
 //     if (hasMine) {
 
 //     } else if (getNumTouchingMines > 0) {
@@ -157,7 +158,7 @@ Square.prototype = {
 //     } else { // is a "blank square"
 //       discoverAdjacentSquares
 //     }
-//   },
+  }
 //   setView:function() {},
 //   setViewToFlag:function() {
 //   },
@@ -170,7 +171,9 @@ $(document).ready(function(){
   $('div.cell').click(function(){
     var coors = game.divCoorsToInt($(this).attr('id'));
     var cell = game.grid[coors[0]][coors[1]];
-    console.log(cell);
+    cell.setToDiscovered();
+
+    game.renderGrid();
   });
   // on click of div.cell:
   // get cell's coors.
