@@ -109,10 +109,10 @@ function Square(grid, gridSize, coordinates) {
 
 Square.prototype = {
   constructor: Square,
-//   discoverAdjacentSquares:function() {
+  discoverAdjacentSquares:function() {
 //     look at squares adjacent on grid:
 //     setToDiscovered(adjSquare);
-//   },
+  },
   getAdjacentSquaresCoors:function(gridSize) {
     var resAry = [];
     var x_coor = this.coordinates[0];
@@ -151,13 +151,13 @@ Square.prototype = {
   },
   setToDiscovered:function() {
     this.isDiscovered = true;
-//     if (hasMine) {
-
-//     } else if (getNumTouchingMines > 0) {
-
-//     } else { // is a "blank square"
-//       discoverAdjacentSquares
-//     }
+    if (this.hasMine === true) {
+      alert("Game over, you got explodanated!!");
+    } else if (this.numTouchingMines === 0) { // is a "blank square"
+      console.log("discoverAdjSqurs!");
+      this.discoverAdjacentSquares();
+      // discoverAdjacentSquares
+    }
   }
 //   setView:function() {},
 //   setViewToFlag:function() {
