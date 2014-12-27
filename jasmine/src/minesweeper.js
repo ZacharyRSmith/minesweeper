@@ -43,17 +43,32 @@ function Game(gridSize, numMines) {
   }
 }
 
-// Game.prototype = {
+Game.prototype = {
+  constructor: Game,
 //   checkVictory:function() {
 //     if (this.grid.length ** 2 - this.numSquaresDiscovered === this.numMines) {
 //       this.victory = true;
 //     }
 //   },
-//   renderGrid:function() {
-    
-//   }
-// }
-  
+  renderGrid:function() {
+    var htmlStr = '<div id="grid">';
+    for (var col_i in this.grid) {
+      var col = this.grid[col_i];
+      htmlStr = htmlStr + '<div class="col">';
+
+      var rowHtmlStr = '';
+      for (var cell_i in col) {
+        var cell = col[cell_i];
+        rowHtmlStr = cell.getView() + rowHtmlStr;
+      }
+      htmlStr = htmlStr + rowHtmlStr + '</div>';
+    }
+    htmlStr = htmlStr + '</div>';
+
+    $('div#content').html(htmlStr);
+  }
+}
+
 function Square(grid, gridSize, coordinates) {
   this.coordinates = coordinates;
   this.isDiscovered = false;
@@ -126,4 +141,5 @@ Square.prototype = {
 
 $(document).ready(function(){
   var game = new Game();
+  game.renderGrid();
 });
