@@ -110,11 +110,10 @@ function Square(grid, gridSize, coordinates) {
 Square.prototype = {
   constructor: Square,
   discoverAdjacentSquares:function() {
-    
-    console.log("this.adj...: " + this.adjacentSquaresCoors);
+    var grid = this.grid;
     this.adjacentSquaresCoors.forEach(function(coors) {
-      var square = this.grid[coors[0]][coors[1]];
-      square.setToDiscovered();
+      var square = grid[coors[0]][coors[1]];
+      if (square.isDiscovered === false) { square.setToDiscovered(); }
     });
   },
   getAdjacentSquaresCoors:function(gridSize) {
