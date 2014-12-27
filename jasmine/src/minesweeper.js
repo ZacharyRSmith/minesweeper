@@ -18,7 +18,7 @@ function Game(gridSize, numMines) {
       var col = [];
       this.grid.push(col);
       for (var row_i = 0; row_i < gridSize; row_i++) {
-        var row = new Square(gridSize, [col_i, row_i]);
+        var row = new Square(this.grid, gridSize, [col_i, row_i]);
         col.push(row);
       }
     }
@@ -54,15 +54,16 @@ function Game(gridSize, numMines) {
 //   }
 // }
   
-function Square(gridSize, coordinates) {
+function Square(grid, gridSize, coordinates) {
   this.coordinates = coordinates;
   this.isDiscovered = false;
+  this.grid = grid;
   this.hasMine = false;
   this.numTouchingMines = null;
   this.view = " "; //   view (Mine, numMines, flag, question, blank)
 
   // Init functions:
-  this.adjSquaresCoors = this.getAdjacentSquaresCoors(gridSize);
+  this.adjacentSquaresCoors = this.getAdjacentSquaresCoors(gridSize);
 }
 
 Square.prototype = {
@@ -77,14 +78,16 @@ Square.prototype = {
     var y_coor = this.coordinates[1];
 
     // Iterate through 8 possible adj square coordinate combinations.
-    // If coordinates are non-negative, add to result array.
+    // If coordinates are non-negative and inside grid, add to result array.
     for (var i = -1; i <= 1; i++) {
       var x_coorNew = x_coor + i;
       if (0 <= x_coorNew && x_coorNew <= gridSize) {
         for (var j = -1; j <= 1; j++) {
           var y_coorNew = y_coor + j;
           if (0 <= y_coorNew && y_coorNew <= gridSize) {
-            resAry.push([x_coorNew, y_coorNew]);
+            // Coordinates 0,0 is this square.
+            if (x_coorNew == 0 && y_coorNew == 0) { continue; }
+            else { resAry.push([x_coorNew, y_coorNew]); }
           }
         }
       }
