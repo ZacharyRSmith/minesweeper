@@ -66,13 +66,6 @@ Game.prototype = {
       alert("You've won!! : D");
     }
   },
-  divCoorsToInt:function(coorsStr) {
-    var coorsIntAry = [];
-    var coorsStrAry = coorsStr.split(",");
-    coorsIntAry[0] = parseInt(coorsStrAry[0]);
-    coorsIntAry[1] = parseInt(coorsStrAry[1]);
-    return coorsIntAry;
-  },
   renderGrid:function() {
     var htmlStr = '<div id="grid">';
     this.grid.forEach(function(col) {
@@ -180,16 +173,18 @@ Square.prototype = {
   }
 }
 
-function getCell(jQObj, game) {
-  var coors = game.divCoorsToInt(jQObj.attr('id'));
-  var cell = game.grid[coors[0]][coors[1]];
-  return cell;
+function divCoorsToInt(coorsStr) {
+  var coorsIntAry = [];
+  var coorsStrAry = coorsStr.split(",");
+  coorsIntAry[0] = parseInt(coorsStrAry[0]);
+  coorsIntAry[1] = parseInt(coorsStrAry[1]);
+  return coorsIntAry;
 }
 
 function actOnClickedCell(jQObj, game, callback) {
-  var cell = getCell(jQObj, game);
+  var coors = divCoorsToInt(jQObj.attr('id'));
+  var cell = game.grid[coors[0]][coors[1]];
   callback.call(cell);
-  game.renderGrid();
 }
 
 $(document).ready(function(){
@@ -198,8 +193,9 @@ $(document).ready(function(){
   $('div#content').on('click', '.cell', function(){
     actOnClickedCell($(this), game, function() {
       this.setToDiscovered();
-      game.checkVictory();
     });
+    game.checkVictory();
+    game.renderGrid();
   });
   $('div#content').on('contextmenu', '.cell', function(e){
     e.preventDefault();
@@ -207,5 +203,6 @@ $(document).ready(function(){
     actOnClickedCell($(this), game, function() {
       this.actOnRightClick();
     });
+    game.renderGrid();
   });
 });
