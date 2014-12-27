@@ -60,11 +60,12 @@ function Game(gridSize, numMines) {
 
 Game.prototype = {
   constructor: Game,
-//   checkVictory:function() {
-//     if (this.grid.length ** 2 - this.numSquaresDiscovered === this.numMines) {
-//       this.victory = true;
-//     }
-//   },
+  checkVictory:function() {
+    if (Math.pow(this.grid.length, 2) - this.numSquaresDiscovered === this.numMines) {
+      this.victory = true;
+      alert("You've won!! : D");
+    }
+  },
   divCoorsToInt:function(coorsStr) {
     var coorsIntAry = [];
     var coorsStrAry = coorsStr.split(",");
@@ -113,11 +114,10 @@ function Square(game, gridSize, coordinates) {
 Square.prototype = {
   constructor: Square,
   discoverAdjacentSquares:function() {
-    var grid = this.grid;
     this.adjacentSquaresCoors.forEach(function(coors) {
-      var square = grid[coors[0]][coors[1]];
+      var square = this.game.grid[coors[0]][coors[1]];
       if (square.isDiscovered === false) { square.setToDiscovered(); }
-    });
+    }, this);
   },
   getAdjacentSquaresCoors:function(gridSize) {
     var resAry = [];
@@ -151,15 +151,15 @@ Square.prototype = {
 //   },
   setToDiscovered:function() {
     this.isDiscovered = true;
+    this.game.numSquaresDiscovered++;
     if (this.hasMine === true) {
       alert("Game over, you got explodanated!!");
-      this.grid.forEach(function(col) {
+      this.game.grid.forEach(function(col) {
         col.forEach(function(cell) {
           cell.isDiscovered = true;
         });
       });
     } else if (this.numTouchingMines === 0) { // is a "blank square"
-      console.log("discoverAdjSqurs!");
       this.discoverAdjacentSquares();
       // discoverAdjacentSquares
     }
@@ -179,5 +179,6 @@ $(document).ready(function(){
     cell.setToDiscovered();
 
     game.renderGrid();
+    game.checkVictory();
   });
 });
