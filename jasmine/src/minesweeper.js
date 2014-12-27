@@ -178,18 +178,19 @@ Square.prototype = {
       // discoverAdjacentSquares
     }
   }
-//   setView:function() {},
-//   setViewToFlag:function() {
-//   },
-//   setViewToQuestion:function() {}
+}
+
+function getCell(jQObj, game) {
+  var coors = game.divCoorsToInt(jQObj.attr('id'));
+  var cell = game.grid[coors[0]][coors[1]];
+  return cell;
 }
 
 $(document).ready(function(){
   var game = new Game(9, 10);
   game.renderGrid();
   $('div#content').on('click', '.cell', function(){
-    var coors = game.divCoorsToInt($(this).attr('id'));
-    var cell = game.grid[coors[0]][coors[1]];
+    var cell = getCell($(this), game);
     cell.setToDiscovered();
 
     game.renderGrid();
@@ -197,8 +198,7 @@ $(document).ready(function(){
   });
   $('div#content').on('contextmenu', '.cell', function(e){
     e.preventDefault();
-    var coors = game.divCoorsToInt($(this).attr('id'));
-    var cell = game.grid[coors[0]][coors[1]];
+    var cell = getCell($(this), game);
     cell.actOnRightClick();
 
     game.renderGrid();
