@@ -1,6 +1,4 @@
-// Start with a 9x9 board with 10 mines.
-
-// numFlags = numMines
+// JS file for Minesweeper
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -192,12 +190,11 @@ function actOnClickedCell(jQObj, game, callback) {
 }
 
 // GAME INIT:
-var gridSizeStr = prompt("How long should each side of the Grid be?");
+var gridSizeStr = prompt("Welcome to Minesweeper!\n" +
+                         "How long should each side of the Grid be?");
 var gridSizeInt = parseInt(gridSizeStr);
 
-var numMinesStr = prompt("How many mines should there be?\n" +
-                         "(WARNING: If mines mostly cover the board,\n" +
-                         " game start will take a long time!)");
+var numMinesStr = prompt("How many mines should there be?");
 var numMinesInt = parseInt(numMinesStr);
 
 var game = new Game(gridSizeInt, numMinesInt);
