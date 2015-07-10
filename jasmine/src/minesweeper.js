@@ -16,19 +16,7 @@ function Game (gridSize, numMines) {
   this.numSquaresDiscovered = 0;
 
   this.grid = this.buildGrid(gridSize);
-
-  // Place mines:
-  var countOfMinesPlaced = 0;
-  while (countOfMinesPlaced < numMines) {
-    var x_coor = getRandomInt(0, gridSize);
-    var y_coor = getRandomInt(0, gridSize);
-    var sqr = this.grid[x_coor][y_coor];
-    if (sqr.hasMine === false) {
-      sqr.hasMine = true;
-      sqr.view = '<div class="cell">m</div>';
-      countOfMinesPlaced++;
-    }
-  }
+  this.placeMines();
 
   // Set numTouchingMines prop on squares.
   {
@@ -76,6 +64,20 @@ Game.prototype = {
   getCell:function (cellDiv) {
     var coors = getCoorsInts(cellDiv.attr('id'));
     return game.grid[coors[0]][coors[1]];
+  },
+  placeMines:function () {
+    var minesPlaced = 0;
+    
+    while (minesPlaced < numMines) {
+      var x = getRandomInt(0, gridSize);
+      var y = getRandomInt(0, gridSize);
+      var sqr = this.grid[x][y];
+      
+      if (sqr.hasMine) { continue; }
+      
+      sqr.placeMine();
+      minesPlaced += 1;
+    }
   },
   renderGrid:function () {
     var htmlStr = '<div id="grid">';
@@ -170,6 +172,10 @@ Square.prototype = {
             '">_</div>';
         break;
     }
+  },
+  placeMine:function () {
+    this.hasMine = true;
+    this.view = '<div class="cell">m</div>';
   },
   setToDiscovered:function () {
     this.isDiscovered = true;
