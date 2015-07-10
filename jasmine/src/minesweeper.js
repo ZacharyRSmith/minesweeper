@@ -198,7 +198,7 @@ var numMinesStr = prompt("How many mines should there be?");
 var numMinesInt = parseInt(numMinesStr);
 
 var game = new Game(gridSizeInt, numMinesInt);
-game.renderGrid();
+
 
 var time = 0;
 var intervalID = setInterval(function() {
@@ -207,7 +207,7 @@ var intervalID = setInterval(function() {
 }, 1000);
 
 $(document).ready(function(){
-
+  game.renderGrid();
 
   $('div#content').on('click', '.cell', function(){
     actOnClickedCell($(this), game, function() {
