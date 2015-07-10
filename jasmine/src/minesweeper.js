@@ -1,4 +1,4 @@
-function getCoorsInts(strCoors) {
+function getCoorsInts (strCoors) {
   var intAry = [];
   var strAryCoors = strCoors.split(',');
   intAry[0] = parseInt(strAryCoors[0]);
@@ -6,27 +6,16 @@ function getCoorsInts(strCoors) {
   return intAry;
 }
 
-function getRandomInt(min, max) {
+function getRandomInt (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function Game(gridSize, numMines) {
+function Game (gridSize, numMines) {
   this.numFlagsPlaced = 0;
   this.numMines = numMines;
   this.numSquaresDiscovered = 0;
 
-  // Build this.grid:
-  {
-    this.grid = [];
-    for (var col_i = 0; col_i < gridSize; col_i++) {
-      var col = [];
-      this.grid.push(col);
-      for (var row_i = 0; row_i < gridSize; row_i++) {
-        var row = new Square(this, gridSize, [col_i, row_i]);
-        col.push(row);
-      }
-    }
-  }
+  this.grid = this.buildGrid(gridSize);
 
   // Place mines:
   var countOfMinesPlaced = 0;
@@ -64,23 +53,37 @@ function Game(gridSize, numMines) {
 
 Game.prototype = {
   constructor: Game,
-  checkVictory:function() {
+  
+  buildGrid:function (gridSize) {
+    var grid = [];
+    
+    for (var x=0; x<gridSize; x++) {
+      var col = [];
+      grid.push(col);
+      
+      for (var y=0; y<gridSize; y++) {
+        col.push(new Square(this, gridSize, [x, y]));
+      }
+    }
+    return grid;
+  },
+  checkVictory:function () {
     if (Math.pow(this.grid.length, 2) - this.numSquaresDiscovered === this.numMines) {
       clearInterval(intervalID);
       alert("You've won!! : D");
     }
   },
-  getCell:function(cellDiv) {
+  getCell:function (cellDiv) {
     var coors = getCoorsInts(cellDiv.attr('id'));
     return game.grid[coors[0]][coors[1]];
   },
-  renderGrid:function() {
+  renderGrid:function () {
     var htmlStr = '<div id="grid">';
     this.grid.forEach(function(col) {
       htmlStr = htmlStr + '<div class="col">';
 
       var rowHtmlStr = '';
-      col.forEach(function(cell) {
+      col.forEach(function (cell) {
         if (cell.isDiscovered === true) {
           rowHtmlStr = cell.view + rowHtmlStr;
         } else {
@@ -115,8 +118,9 @@ function Square(game, gridSize, coordinates) {
 
 Square.prototype = {
   constructor: Square,
-  discoverAdjacentSquares:function() {
-    this.adjacentSquaresCoors.forEach(function(coors) {
+  
+  discoverAdjacentSquares:function () {
+    this.adjacentSquaresCoors.forEach(function (coors) {
       var square = this.game.grid[coors[0]][coors[1]];
 
       if (square.isDiscovered === false) {
@@ -125,7 +129,7 @@ Square.prototype = {
       }
     }, this);
   },
-  getAdjacentSquaresCoors:function(gridSize) {
+  getAdjacentSquaresCoors:function (gridSize) {
     var resAry = [];
     var x_coor = this.coordinates[0];
     var y_coor = this.coordinates[1];
@@ -146,7 +150,7 @@ Square.prototype = {
     }
     return resAry;
   },
-  actOnRightClick:function() {
+  actOnRightClick:function () {
     if (this.isDiscovered) { return false; }
 
     switch(this.viewType) {
@@ -167,14 +171,14 @@ Square.prototype = {
         break;
     }
   },
-  setToDiscovered:function() {
+  setToDiscovered:function () {
     this.isDiscovered = true;
 
     if (this.hasMine === true) {
       clearInterval(intervalID);
       alert("Game over, you got explodanated!!");
-      this.game.grid.forEach(function(col) {
-        col.forEach(function(cell) {
+      this.game.grid.forEach(function (col) {
+        col.forEach(function (cell) {
           cell.isDiscovered = true;
         });
       });
@@ -191,21 +195,21 @@ var numMines = prompt("How many mines should there be?");
 var game = new Game(parseInt(gridSize), parseInt(numMines));
 
 var time = 0;
-var intervalID = setInterval(function() {
+var intervalID = setInterval(function () {
   time++;
   $('button#timer').html('<button id="timer">Time: ' + time + '</button>');
 }, 1000);
 
-$(document).ready(function(){
+$(document).ready(function (){
   game.renderGrid();
 
-  $('div#content').on('click', '.cell', function(){
+  $('div#content').on('click', '.cell', function (){
     game.getCell($(this)).setToDiscovered();
     game.numSquaresDiscovered += 1;
     game.checkVictory();
     game.renderGrid();
   });
-  $('div#content').on('contextmenu', '.cell', function(e){
+  $('div#content').on('contextmenu', '.cell', function (e){
     e.preventDefault();
 
     game.getCell($(this)).actOnRightClick();
