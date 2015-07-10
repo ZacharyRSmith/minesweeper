@@ -1,9 +1,6 @@
-function getCoorsInts (strCoors) {
-  var intAry = [];
-  var strAryCoors = strCoors.split(',');
-  intAry[0] = parseInt(strAryCoors[0]);
-  intAry[1] = parseInt(strAryCoors[1]);
-  return intAry;
+function getCoorsFromStr (str) {
+  var strAry = str.split(',');
+  return [parseInt(strAry[0]), parseInt(strAry[1])];
 }
 
 function getRandomInt (min, max) {
@@ -11,32 +8,12 @@ function getRandomInt (min, max) {
 }
 
 function Game (gridSize, numMines) {
-  this.numFlagsPlaced = 0;
   this.numMines = numMines;
   this.numSquaresDiscovered = 0;
 
   this.grid = this.buildGrid(gridSize);
   this.placeMines();
-
-  // Set numTouchingMines prop on squares.
-  {
-    var grid = this.grid;
-    grid.forEach(function(col) {
-      col.forEach(function(cell) {
-        cell.adjacentSquaresCoors.forEach(function(coors) {
-          x_coor = coors[0];
-          y_coor = coors[1];
-          if (grid[x_coor][y_coor].hasMine === true) {
-            cell.numTouchingMines++;
-          }
-        });
-
-        if (cell.hasMine === false) {
-          cell.view = '<div class="cell">' + cell.numTouchingMines + '</div>';
-        }
-      });
-    });
-  }
+  this.setNumTouchingMines();
 }
 
 Game.prototype = {
@@ -55,23 +32,86 @@ Game.prototype = {
     }
     return grid;
   },
+  
   checkVictory:function () {
-    if (Math.pow(this.grid.length, 2) - this.numSquaresDiscovered === this.numMines) {
+    
+    if (Math.pow(this.grid.length, 2) - this.numSquaresDiscovered ===
+                                                      this.numMines) {
       clearInterval(intervalID);
       alert("You've won!! : D");
     }
   },
-  getCell:function (cellDiv) {
-    var coors = getCoorsInts(cellDiv.attr('id'));
-    return game.grid[coors[0]][coors[1]];
+  
+  discoverAdjacentSquares:function (sqr) {
+    var adjSqrs = this.getAdjacentSquares(sqr);
+    
+    adjSqrs.forEach(function (adjSqr) {
+      
+      if (adjSqr.isDiscovered) { return; }
+      
+      adjSqr.discover();
+    });
   },
+  
+  discoverEverySquare:function () {
+    this.grid.forEach(function (col) {
+      col.forEach(function (sqr) {
+        sqr.isDiscovered = true;
+      });
+    });
+  },
+
+  end:function () {
+    clearInterval(intervalID);
+    alert("Game over, you got explodanated!!");
+    this.discoverEverySquare();
+  },
+    
+  getAdjacentSquares:function (sqr) {
+    var adjSqrs = [];
+    var x = sqr.coordinates[0];
+    var y = sqr.coordinates[1];
+
+    [-1, 0, 1].forEach(function (addX) {
+      crntX = x + addX;
+
+      [-1, 0, 1].forEach(function (addY) {
+        crntY = y + addY;
+        
+        // If no change were made to x or y, then crntX and crntY would
+        // equal the param square's coordinates, so skip.
+        if (addX === 0 && addY === 0) { return; }
+
+        var crntSqr = this.getSquare([crntX, crntY]);
+
+        if (!crntSqr) { return; }
+
+        adjSqrs.push(crntSqr);
+      }, this);
+    }, this);
+    return adjSqrs;
+  },
+  
+  getSquareFromDiv:function (div) {
+    return this.getSquare(getCoorsFromStr(div.attr('id')));
+  },
+  
+  getSquare:function (coors) {
+    var x = coors[0];
+    var y = coors[1];
+
+    if (!this.grid[x] || !this.grid[x][y]) { return; }
+    
+    return this.grid[x][y];
+  },
+  
   placeMines:function () {
     var minesPlaced = 0;
     
     while (minesPlaced < numMines) {
       var x = getRandomInt(0, gridSize);
       var y = getRandomInt(0, gridSize);
-      var sqr = this.grid[x][y];
+      var sqr = this.getSquare([x, y]);
       
       if (sqr.hasMine) { continue; }
       
@@ -79,14 +119,17 @@ Game.prototype = {
       minesPlaced += 1;
     }
   },
+  
   renderGrid:function () {
     var htmlStr = '<div id="grid">';
+    
     this.grid.forEach(function(col) {
       htmlStr = htmlStr + '<div class="col">';
 
       var rowHtmlStr = '';
       col.forEach(function (cell) {
-        if (cell.isDiscovered === true) {
+        
+        if (cell.isDiscovered) {
           rowHtmlStr = cell.view + rowHtmlStr;
         } else {
           rowHtmlStr = cell.viewUndiscovered + rowHtmlStr;
@@ -96,15 +139,23 @@ Game.prototype = {
     });
     htmlStr = htmlStr + '</div>';
 
-    $('div#content').html(htmlStr);
+    $('div#grid').html(htmlStr);
+  },
+
+  setNumTouchingMines:function() {
+    
+    this.grid.forEach(function (col) {
+      
+      col.forEach(function (sqr) {
+        sqr.setNumTouchingMines();
+      });
+    }, this);
   }
 }
 
 function Square(game, gridSize, coordinates) {
-  // REFERENCES:
   this.game = game;
 
-  // PROPS:
   this.coordinates = coordinates;
   this.isDiscovered = false;
   this.hasMine = false;
@@ -112,48 +163,29 @@ function Square(game, gridSize, coordinates) {
   this.view = '<div class="cell" id="' + this.coordinates + '">..</div>';
   this.viewType = "blank";
   this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
-    '">_</div>';
-
-  // INIT FUNCTIONS:
-  this.adjacentSquaresCoors = this.getAdjacentSquaresCoors(gridSize);
+      '">_</div>';
 }
 
 Square.prototype = {
   constructor: Square,
-  
-  discoverAdjacentSquares:function () {
-    this.adjacentSquaresCoors.forEach(function (coors) {
-      var square = this.game.grid[coors[0]][coors[1]];
 
-      if (square.isDiscovered === false) {
-        square.setToDiscovered();
-        this.game.numSquaresDiscovered += 1;
-      }
-    }, this);
-  },
-  getAdjacentSquaresCoors:function (gridSize) {
-    var resAry = [];
-    var x_coor = this.coordinates[0];
-    var y_coor = this.coordinates[1];
-
-    // Iterate through 8 possible adj square coordinate combinations.
-    // If coordinates are non-negative and inside grid, add to result array.
-    for (var i = -1; i <= 1; i++) {
-      var x_coorNew = x_coor + i;
-      if (0 <= x_coorNew && x_coorNew <= gridSize - 1) {
-        for (var j = -1; j <= 1; j++) {
-          var y_coorNew = y_coor + j;
-          if (0 <= y_coorNew && y_coorNew <= gridSize - 1) {
-            if (x_coorNew == x_coor && y_coorNew == y_coor) { continue; }
-            else { resAry.push([x_coorNew, y_coorNew]); }
-          }
-        }
-      }
+  discover:function () {
+    if (this.isDiscovered) { return; }
+    if (this.hasMine) {
+      this.game.end();
+      return;
     }
-    return resAry;
+    
+    this.isDiscovered = true;
+    this.game.numSquaresDiscovered += 1;
+
+    if (this.numTouchingMines === 0) {
+      this.game.discoverAdjacentSquares(this);
+    }
   },
+
   actOnRightClick:function () {
-    if (this.isDiscovered) { return false; }
+    if (this.isDiscovered) { return; }
 
     switch(this.viewType) {
       case "blank":
@@ -173,23 +205,20 @@ Square.prototype = {
         break;
     }
   },
+
   placeMine:function () {
     this.hasMine = true;
     this.view = '<div class="cell">m</div>';
   },
-  setToDiscovered:function () {
-    this.isDiscovered = true;
 
-    if (this.hasMine === true) {
-      clearInterval(intervalID);
-      alert("Game over, you got explodanated!!");
-      this.game.grid.forEach(function (col) {
-        col.forEach(function (cell) {
-          cell.isDiscovered = true;
-        });
-      });
-    } else if (this.numTouchingMines === 0) {
-      this.discoverAdjacentSquares();
+  setNumTouchingMines:function () {
+    
+    this.game.getAdjacentSquares(this).forEach(function (adjSqr) {
+      if (adjSqr.hasMine) { this.numTouchingMines += 1; }
+    }, this);
+    
+    if (!this.hasMine) {
+      this.view = '<div class="cell">' + this.numTouchingMines + '</div>';
     }
   }
 }
@@ -209,16 +238,15 @@ var intervalID = setInterval(function () {
 $(document).ready(function (){
   game.renderGrid();
 
-  $('div#content').on('click', '.cell', function (){
-    game.getCell($(this)).setToDiscovered();
-    game.numSquaresDiscovered += 1;
+  $('div#grid').on('click', '.cell', function (){
+    game.getSquareFromDiv($(this)).discover();
     game.checkVictory();
     game.renderGrid();
   });
-  $('div#content').on('contextmenu', '.cell', function (e){
+  $('div#grid').on('contextmenu', '.cell', function (e){
     e.preventDefault();
 
-    game.getCell($(this)).actOnRightClick();
+    game.getSquareFromDiv($(this)).actOnRightClick();
     game.renderGrid();
   });
 });
