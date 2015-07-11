@@ -127,12 +127,12 @@ Game.prototype = {
       htmlStr = htmlStr + '<div class="col">';
 
       var rowHtmlStr = '';
-      col.forEach(function (cell) {
+      col.forEach(function (sqr) {
         
-        if (cell.isDiscovered) {
-          rowHtmlStr = cell.view + rowHtmlStr;
+        if (sqr.isDiscovered) {
+          rowHtmlStr = sqr.view + rowHtmlStr;
         } else {
-          rowHtmlStr = cell.viewUndiscovered + rowHtmlStr;
+          rowHtmlStr = sqr.viewUndiscovered + rowHtmlStr;
         }
       });
       htmlStr = htmlStr + rowHtmlStr + '</div>';
@@ -160,9 +160,9 @@ function Square(game, gridSize, coordinates) {
   this.isDiscovered = false;
   this.hasMine = false;
   this.numTouchingMines = 0;
-  this.view = '<div class="cell" id="' + this.coordinates + '">..</div>';
+  this.view = '<div class="sqr" id="' + this.coordinates + '">..</div>';
   this.viewType = "blank";
-  this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+  this.viewUndiscovered = '<div class="sqr" id="' + this.coordinates +
       '">_</div>';
 }
 
@@ -190,17 +190,17 @@ Square.prototype = {
     switch(this.viewType) {
       case "blank":
         this.viewType = "flag";
-        this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+        this.viewUndiscovered = '<div class="sqr" id="' + this.coordinates +
             '">F</div>';
         break;
       case "flag":
         this.viewType = "question";
-        this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+        this.viewUndiscovered = '<div class="sqr" id="' + this.coordinates +
             '">?</div>';
         break;
       case "question":
         this.viewType = "blank";
-        this.viewUndiscovered = '<div class="cell" id="' + this.coordinates +
+        this.viewUndiscovered = '<div class="sqr" id="' + this.coordinates +
             '">_</div>';
         break;
     }
@@ -208,7 +208,7 @@ Square.prototype = {
 
   placeMine:function () {
     this.hasMine = true;
-    this.view = '<div class="cell">m</div>';
+    this.view = '<div class="sqr">m</div>';
   },
 
   setNumTouchingMines:function () {
@@ -218,7 +218,7 @@ Square.prototype = {
     }, this);
     
     if (!this.hasMine) {
-      this.view = '<div class="cell">' + this.numTouchingMines + '</div>';
+      this.view = '<div class="sqr">' + this.numTouchingMines + '</div>';
     }
   }
 }
@@ -229,6 +229,7 @@ var gridSize = prompt("Welcome to Minesweeper!\n" +
 var numMines = prompt("How many mines should there be?");
 var game = new Game(parseInt(gridSize), parseInt(numMines));
 
+// TIMER:
 var time = 0;
 var intervalID = setInterval(function () {
   time++;
@@ -238,12 +239,12 @@ var intervalID = setInterval(function () {
 $(document).ready(function (){
   game.renderGrid();
 
-  $('div#grid').on('click', '.cell', function (){
+  $('div#grid').on('click', '.sqr', function (){
     game.getSquareFromDiv($(this)).discover();
     game.checkVictory();
     game.renderGrid();
   });
-  $('div#grid').on('contextmenu', '.cell', function (e){
+  $('div#grid').on('contextmenu', '.sqr', function (e){
     e.preventDefault();
 
     game.getSquareFromDiv($(this)).actOnRightClick();

@@ -2,7 +2,7 @@
     float: left;
 }
 
-div.cell {
+div.sqr {
     background-color: gray;
     border-style: solid;
     border-width: 1px;
